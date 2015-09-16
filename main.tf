@@ -16,7 +16,7 @@ variable "num_nodes" {
 resource "aws_instance" "ose-master" {
     ami = "ami-12663b7a"
     instance_type = "m3.large"
-    security_groups = [ "default", "activemq-demo" ]
+    security_groups = [ "default", "ose-demo" ]
     availability_zone = "us-east-1c"
     key_name = "postakey"
     tags {
@@ -34,7 +34,7 @@ resource "aws_instance" "ose-node" {
     count = "${var.num_nodes}"
     ami = "ami-12663b7a"
     instance_type = "m3.large"
-    security_groups = [ "default", "activemq-demo" ]
+    security_groups = [ "default", "ose-demo" ]
     availability_zone = "us-east-1c"
     key_name = "postakey"
     tags {
