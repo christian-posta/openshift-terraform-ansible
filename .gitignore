@@ -5,3 +5,5 @@ inventory
 rhel-sub-vars.yml
 *.bak
 use-*
+.idea
+*.iml
