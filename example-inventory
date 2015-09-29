@@ -13,20 +13,26 @@ ansible_sudo=true
 
 product_type=openshift
 deployment_type=origin
-openshift_version=-1.0.4
+#openshift_pkg_version=-1.0.4
+#openshift_pkg_version=-3.0.1.0
 openshift_master_cluster_public_hostname=master.fuse.osecloud.com
 
 
 # uncomment the following to enable htpasswd authentication; defaults to DenyAllPasswordIdentityProvider
-openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/openshift/openshift-passwd'}]
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/openshift-passwd'}]
 osm_default_subdomain=apps.fuse.osecloud.com
 
 # host group for masters
 [masters]
-ec2-204-236-217-137.compute-1.amazonaws.com openshift_public_hostname=master.fuse.osecloud.com
+ec2-54-226-239-139.compute-1.amazonaws.com openshift_public_hostname=master.fuse.osecloud.com
 
 # host group for nodes, includes region info
 [nodes]
-ec2-204-236-217-137.compute-1.amazonaws.com openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
-ec2-54-163-225-48.compute-1.amazonaws.com openshift_node_labels="{'region': 'primary', 'zone': 'east'}"
-ec2-107-21-113-111.compute-1.amazonaws.com openshift_node_labels="{'region': 'primary', 'zone': 'west'}"
+ec2-54-226-239-139.compute-1.amazonaws.com openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
+ec2-54-234-236-240.compute-1.amazonaws.com openshift_node_labels="{'region': 'primary', 'zone': 'east'}"
+ec2-54-159-17-227.compute-1.amazonaws.com openshift_node_labels="{'region': 'primary', 'zone': 'east'}"
+ec2-54-221-31-162.compute-1.amazonaws.com openshift_node_labels="{'region': 'primary', 'zone': 'east'}"
+ec2-54-242-180-2.compute-1.amazonaws.com openshift_node_labels="{'region': 'primary', 'zone': 'east'}"
+ec2-107-20-19-225.compute-1.amazonaws.com openshift_node_labels="{'region': 'primary', 'zone': 'east'}"
+
+
