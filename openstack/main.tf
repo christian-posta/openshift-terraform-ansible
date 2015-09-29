@@ -7,6 +7,11 @@ variable "openstack_availability_zone" {}
 variable "openstack_region" {}
 variable "openstack_keypair" {}
 variable "num_nodes" { default = "2"}
+variable "master_image_id" {}
+variable "master_instance_size" {}
+variable "node_image_id" {}
+variable "node_instance_size" {}
+
 
 provider "openstack" {
     user_name  = "${var.openstack_user_name}"
@@ -113,27 +118,30 @@ resource "openstack_compute_floatingip_v2" "os3-node-floatip" {
 }
 
 resource "openstack_compute_instance_v2" "ose-master" {
-  name = "os3-master-"
+  name = "os3-master"
   region = "${var.openstack_region}"
-  /* iamge _OS1_rhel-guest-image-7.0-20140930.0.x86_64.qcow2 */
-  image_id = "56c2b20d-4cc5-40e4-96d7-8c47cda64aab"
-  flavor_name = "c3.xlarge"
+  image_id = "${var.master_image_id}"
+  flavor_name = "${var.master_instance_size}"
   availability_zone = "${var.openstack_availability_zone}"
   key_pair = "${var.openstack_keypair}"
   security_groups = ["default", "os3-sec-group"]
   floating_ip = "${openstack_compute_floatingip_v2.os3-master-floatip.address}"
+  metadata {
+    ssh_user = "cloud-user"
+  }
 }
 
 resource "openstack_compute_instance_v2" "ose-node" {
   count = "${var.num_nodes}"
   name = "${concat("os3-node", count.index)}"
   region = "${var.openstack_region}"
-
-  /* iamge _OS1_rhel-guest-image-7.0-20140930.0.x86_64.qcow2 */
-  image_id = "56c2b20d-4cc5-40e4-96d7-8c47cda64aab"
-  flavor_name = "c3.xlarge"
+  image_id = "${var.node_image_id}"
+  flavor_name = "${var.node_instance_size}"
   availability_zone = "${var.openstack_availability_zone}"
   key_pair = "${var.openstack_keypair}"
   security_groups = ["default", "os3-sec-group"]
   floating_ip = "${element(openstack_compute_floatingip_v2.os3-node-floatip.*.address, count.index)}"
+  metadata {
+    ssh_user = "cloud-user"
+  }
 }

@@ -50,13 +50,3 @@ resource "aws_instance" "ose-node" {
 		volume_size = "${var.ebs_root_block_size}"
 	}
 }
-
-
-
-resource "aws_eip" "master-eip" {
-    instance = "${aws_instance.ose-master.id}"
-}
-resource "aws_eip" "node-eips" {
-    count = "${var.num_nodes}"
-    instance = "${element(aws_instance.ose-node.*.id, count.index)}"
-}

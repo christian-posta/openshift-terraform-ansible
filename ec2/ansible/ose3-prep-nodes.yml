@@ -5,7 +5,7 @@
     - name: disable all repos by default
       shell: subscription-manager repos --disable="*"      
     - name: Enable the requisite rhel7 repos
-      shell: subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-server-optional-rpms"
+      shell: subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-server-optional-rpms" --enable="rhel-7-server-ose-3.0-rpms"
     - name: Import keys
       rpm_key: state=present key=/etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-beta
     - name: Remove Network Manager
