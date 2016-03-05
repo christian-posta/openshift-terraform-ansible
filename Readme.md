@@ -13,10 +13,12 @@ There are a few pre-requisites for these scripts:
 * git
 
 
-To get started, use git to pull down this repo. You'll also want to clone down the [openshift-ansible installer](https://github.com/openshift/openshift-ansible) as that's used to do the actual deployment of openshift (which is awesome by the way!). For this getting started section, let's assume the directory structure looks like this:
+To get started, use git to pull down this repo. You'll also want to clone down the [openshift-ansible installer](https://github.com/openshift/openshift-ansible) as that's used to do the actual deployment of openshift (which is awesome by the way!). This project also used the [terraform.py] (https://github.com/CiscoCloud/terraform.py) to create an Ansible invetory from the Terraform files.
+For this getting started section, let's assume the directory structure looks like this:
 
     ./openshift-terraform-ansible/
     ./openshift-ansible/
+    ./terraform.py/
     
 You'll need to fill in some credentials for the different environments that you use. There are two files that need to be updated: the terraform credentials and the RHEL subscription credentials (NOTE: you need RHEL to install OpenShift Enterprise. If you're just installing Origin, then you don't need a subscription -- ie, can just use Fedora)
 
@@ -84,12 +86,12 @@ If this completes successfully, then yay! You should go to the next step to prep
 ### Connect up your RHEL subscription (optional)
 This is an optional step but recommended if you're using RHEL. Run the following ansible script to attach your RHEL subscription to all of the nodes/compute instances created above:
 
-    ansible-playbook -i ../terraform.py ./ansible/rhel-sub.yml --private-key=/location/to/private/keys
+    ansible-playbook -i ../../terraform.py/terraform.py ./ansible/rhel-sub.yml --private-key=/location/to/private/keys
 
 ### Prep your environment
 To prep the environment (downnload docker, set up repos, etc) run the following playbook:
 
-    ansible-playbook -i ../terraform.py ./ansible/ose3-prep-nodes.yml --private-key=/location/to/private/keys
+    ansible-playbook -i ../../terraform.py/terraform.py ./ansible/ose3-prep-nodes.yml --private-key=/location/to/private/keys
     
 ### Run the OpenShift installer
 To run the openshift installer, you'll first need to create the inventory file. Unfortunately this step is a bit manual until I hack the terraform.py scripts to generate this on the fly based on metadata/tags. 
