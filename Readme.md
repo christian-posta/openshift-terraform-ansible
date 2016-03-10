@@ -66,23 +66,23 @@ Create a file named `terraform.tfvars` in the `gce` directory of this repo and a
     gce_project = "<your project name on GCE (top right corner of the console)>"
     num_nodes = "2"
 
-In addition of AWS and OpenStack procedure Google require another extra file which contains the credential information. Terraform use the GCE service account to communicate with GCE and thus you need to have a GCE account file on the ./gce directory (you can simply download it from GCE). You can find more information about this step directly on Teraform documentation here : https://www.terraform.io/docs/providers/google/index.html
+In addition of AWS and OpenStack procedure Google require another extra file which contains the credential information. Terraform use the GCE service account to communicate with GCE and thus you need to have a GCE account file on the `gce` directory (you can simply download it from GCE). You can find more information about this step directly on Teraform documentation here : https://www.terraform.io/docs/providers/google/index.html
 
 Here is my account file as example:
 
-[mysuer@myserver gce]$ cat account.json
-{
-  "type": "service_account",
-  "project_id": "<your project id>",
-  "private_key_id": "b...<short string>...3",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADAN...<very very long string>...SFG35w=\n-----END PRIVATE KEY-----\n",
-  "client_email": "49...o@developer.gserviceaccount.com",
-  "client_id": "49...o.apps.googleusercontent.com",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://accounts.google.com/o/oauth2/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/4...0developer.gserviceaccount.com"
-}
+    [mysuer@myserver gce]$ cat account.json
+    {
+    "type": "service_account",
+    "project_id": "<your project id>",
+    "private_key_id": "b...<short string>...3",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADAN...<very very long string>...SFG35w=\n-----END PRIVATE KEY-----\n",
+    "client_email": "49...o@developer.gserviceaccount.com",
+    "client_id": "49...o.apps.googleusercontent.com",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://accounts.google.com/o/oauth2/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/4...0developer.gserviceaccount.com"
+    }
 
 
 ### RHN Subscription credentials
