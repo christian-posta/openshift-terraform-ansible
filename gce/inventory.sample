@@ -1,0 +1,33 @@
+# Create an OSEv3 group that contains the masters and nodes groups
+[OSEv3:children]
+masters
+nodes
+
+# Set variables common for all OSEv3 hosts
+[OSEv3:vars]
+# SSH user, this user should allow ssh based auth without requiring a password
+ansible_ssh_user=myuser
+
+# If ansible_ssh_user is not root, ansible_sudo must be set to true
+ansible_sudo=true
+
+product_type=openshift
+deployment_type=origin
+#openshift_pkg_version=-1.0.4
+#openshift_pkg_version=-3.0.1.0
+openshift_master_cluster_public_hostname=<public ip of master node>
+
+
+# uncomment the following to enable htpasswd authentication; defaults to DenyAllPasswordIdentityProvider
+openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider', 'filename': '/etc/origin/openshift-passwd'}]
+osm_default_subdomain=aps.c.<projectname on GCE>.internal
+
+# host group for masters
+[masters]
+master.c.<projectname on GCE>.internal openshift_public_hostname=master.c.<projectname on GCE>.internal
+
+# host group for nodes, includes region info
+[nodes]
+node0.c.<projectname on GCE>.internal openshift_node_labels="{'region': 'infra', 'zone': 'default'}"
+node1.c.<projectname on GCE>.internal openshift_node_labels="{'region': 'primary', 'zone': 'east'}"
+

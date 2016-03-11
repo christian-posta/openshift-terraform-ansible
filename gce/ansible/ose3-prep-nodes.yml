@@ -1,0 +1,26 @@
+---
+- hosts: all
+  sudo: yes
+  tasks:
+    - name: Remove Network Manager
+      yum: name=NetworkManager state=absent
+    - name: Install pre requisites
+      yum: name={{ item }} state=present
+      with_items:
+          - wget
+          - git
+          - unzip
+          - net-tools
+          - bind-utils
+          - iptables-services
+          - bridge-utils
+          - tmux
+    - name: Update all yum packages
+      yum: name=* state=latest
+    - name: Install Docker
+      yum: name=docker state=present
+    - name: Enable insecure registry... since we like insecure things
+      lineinfile: dest=/etc/sysconfig/docker state=present line='OPTIONS=--insecure-registry 172.30.0.0/16' regexp="^#?OPTIONS" 
+    - name: Start docker
+      service: name=docker state=started enabled=yes
+      

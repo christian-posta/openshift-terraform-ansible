@@ -13,10 +13,12 @@ There are a few pre-requisites for these scripts:
 * git
 
 
-To get started, use git to pull down this repo. You'll also want to clone down the [openshift-ansible installer](https://github.com/openshift/openshift-ansible) as that's used to do the actual deployment of openshift (which is awesome by the way!). For this getting started section, let's assume the directory structure looks like this:
+To get started, use git to pull down this repo. You'll also want to clone down the [openshift-ansible installer](https://github.com/openshift/openshift-ansible) as that's used to do the actual deployment of openshift (which is awesome by the way!). This project also used the [terraform.py] (https://github.com/CiscoCloud/terraform.py) to create an Ansible invetory from the Terraform files.
+For this getting started section, let's assume the directory structure looks like this:
 
     ./openshift-terraform-ansible/
     ./openshift-ansible/
+    ./terraform.py/
     
 You'll need to fill in some credentials for the different environments that you use. There are two files that need to be updated: the terraform credentials and the RHEL subscription credentials (NOTE: you need RHEL to install OpenShift Enterprise. If you're just installing Origin, then you don't need a subscription -- ie, can just use Fedora)
 
@@ -55,6 +57,33 @@ Create a file named `terraform.tfvars` in the `openstack` directory of this repo
     node_image_id = "6b7a5472-5187-4e38-bce4-9d6d2a11a8e7"
     node_instance_size = "m1.large"
 
+### GCE Credentials
+To access GCE, terraform needs to know the secret keys and access keys for your GCE account. 
+Create a file named `terraform.tfvars` in the `gce` directory of this repo and assign the keys as such:
+
+    gce_access_key = "myuser: ssh-dss AAA<long string - the public key of the user you will use to connect on the server later>szSHlg== myuser@myserver"
+    gce_region = "us-east1"
+    gce_project = "<your project name on GCE (top right corner of the console)>"
+    num_nodes = "2"
+
+In addition of AWS and OpenStack procedure Google require another extra file which contains the credential information. Terraform use the GCE service account to communicate with GCE and thus you need to have a GCE account file on the `gce` directory (you can simply download it from GCE). You can find more information about this step directly on Teraform documentation here : https://www.terraform.io/docs/providers/google/index.html
+
+Here is my account file as example:
+
+    [mysuer@myserver gce]$ cat account.json
+    {
+    "type": "service_account",
+    "project_id": "<your project id>",
+    "private_key_id": "b...<short string>...3",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADAN...<very very long string>...SFG35w=\n-----END PRIVATE KEY-----\n",
+    "client_email": "49...o@developer.gserviceaccount.com",
+    "client_id": "49...o.apps.googleusercontent.com",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://accounts.google.com/o/oauth2/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/4...0developer.gserviceaccount.com"
+    }
+
 
 ### RHN Subscription credentials
 These scripts were tested to run on EC2 with a valid RHEL subscription. They most likely run on the AWS RHEL or CentOS7, but not tested yet.
@@ -84,12 +113,12 @@ If this completes successfully, then yay! You should go to the next step to prep
 ### Connect up your RHEL subscription (optional)
 This is an optional step but recommended if you're using RHEL. Run the following ansible script to attach your RHEL subscription to all of the nodes/compute instances created above:
 
-    ansible-playbook -i ../terraform.py ./ansible/rhel-sub.yml --private-key=/location/to/private/keys
+    ansible-playbook -i ../../terraform.py/terraform.py ./ansible/rhel-sub.yml --private-key=/location/to/private/keys
 
 ### Prep your environment
 To prep the environment (downnload docker, set up repos, etc) run the following playbook:
 
-    ansible-playbook -i ../terraform.py ./ansible/ose3-prep-nodes.yml --private-key=/location/to/private/keys
+    ansible-playbook -i ../../terraform.py/terraform.py ./ansible/ose3-prep-nodes.yml --private-key=/location/to/private/keys
     
 ### Run the OpenShift installer
 To run the openshift installer, you'll first need to create the inventory file. Unfortunately this step is a bit manual until I hack the terraform.py scripts to generate this on the fly based on metadata/tags. 
