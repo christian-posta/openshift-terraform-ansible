@@ -117,6 +117,18 @@ resource "openstack_compute_floatingip_v2" "os3-node-floatip" {
   pool = "os1_public"
 }
 
+
+resource "openstack_blockstorage_volume_v1" "master-docker-vol" {
+  name = "mastervol"
+  size = 75
+}
+
+resource "openstack_blockstorage_volume_v1" "node-docker-vol" {
+  count = "${var.num_nodes}"
+  name = "${concat("node-docker-vol", count.index)}"
+  size = 75
+}
+
 resource "openstack_compute_instance_v2" "ose-master" {
   name = "os3-master"
   region = "${var.openstack_region}"
@@ -128,6 +140,9 @@ resource "openstack_compute_instance_v2" "ose-master" {
   floating_ip = "${openstack_compute_floatingip_v2.os3-master-floatip.address}"
   metadata {
     ssh_user = "cloud-user"
+  }
+  volume {
+    volume_id = "${openstack_blockstorage_volume_v1.master-docker-vol.id}"
   }
 }
 
@@ -143,5 +158,9 @@ resource "openstack_compute_instance_v2" "ose-node" {
   floating_ip = "${element(openstack_compute_floatingip_v2.os3-node-floatip.*.address, count.index)}"
   metadata {
     ssh_user = "cloud-user"
+  }
+  volume {
+    volume_id = "${element(openstack_blockstorage_volume_v1.node-docker-vol.*.id, count.index)}"
+
   }
 }

@@ -3,9 +3,9 @@
   sudo: yes
   tasks:
     - name: disable all repos by default
-      shell: subscription-manager repos --disable="*"      
+      shell: subscription-manager repos --disable="*"
     - name: Enable the requisite rhel7 repos
-      shell: subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-server-optional-rpms" --enable="rhel-7-server-ose-3.0-rpms"
+      shell: subscription-manager repos --enable="rhel-7-server-rpms" --enable="rhel-7-server-extras-rpms" --enable="rhel-7-server-optional-rpms" --enable="rhel-7-server-ose-3.2-rpms"
     - name: Import keys
       rpm_key: state=present key=/etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-beta
     - name: Remove Network Manager
@@ -23,10 +23,15 @@
           - tmux
     - name: Update all yum packages
       yum: name=* state=latest
+    - name: Make filesystem from block device
+      filesystem: fstype=ext3 dev=/dev/vdb
+    - name: Make /var/lib/docker
+      file: path=/var/lib/docker state=directory mode=0755
+    - name: mount block device to /var/lib/docker
+      mount: name=/var/lib/docker src=/dev/vdb state=mounted fstype=ext3
     - name: Install Docker
       yum: name=docker state=present
     - name: Enable insecure registry... since we like insecure things
-      lineinfile: dest=/etc/sysconfig/docker state=present line='OPTIONS=--insecure-registry 172.30.0.0/16' regexp="^#?OPTIONS" 
+      lineinfile: dest=/etc/sysconfig/docker state=present line='OPTIONS=--insecure-registry 172.30.0.0/16' regexp="^#?OPTIONS"
     - name: Start docker
       service: name=docker state=started enabled=yes
-      
