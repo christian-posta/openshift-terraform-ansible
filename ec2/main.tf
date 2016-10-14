@@ -41,7 +41,7 @@ resource "aws_instance" "ose-node" {
     availability_zone = "${var.aws_availability_zone}"
     key_name = "${var.keypair}"
     tags {
-        Name = "${concat("node", count.index)}"
+        Name = "node${count.index}"
         sshUser = "ec2-user"
         role = "nodes"
     }
